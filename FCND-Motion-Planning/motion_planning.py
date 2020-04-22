@@ -5,7 +5,7 @@ from enum import Enum, auto
 
 import numpy as np
 
-from planning_utils import a_star, heuristic, create_grid
+from planning_utils import a_star, heuristic, create_grid, collinearity_prune
 from udacidrone import Drone
 from udacidrone.connection import MavlinkConnection
 from udacidrone.messaging import MsgID
@@ -133,9 +133,11 @@ class MotionPlanning(Drone):
 
         # Done: retrieve current global position
         current_global_position = self.global_position
+        print(f'current global position: {current_global_position} and type {type(current_global_position)}')
 
         # Done: convert to current local position using global_to_local()
         local_position = global_to_local(current_global_position, self.global_home)
+        print(f'local position: {local_position} and type {type(local_position)}')
         
         print('global home {0}, position {1}, local position {2}'.format(self.global_home, self.global_position,
                                                                          self.local_position))
@@ -151,24 +153,26 @@ class MotionPlanning(Drone):
         grid_start = (int(local_position[0]) - north_offset, int(local_position[1]) - east_offset)
         
         # Set goal as some arbitrary position on the grid
-        grid_goal = (-north_offset + 10, -east_offset + 10)
+        # grid_goal = (-north_offset + 10, -east_offset + 10)
         # Done: adapt to set goal as latitude / longitude position and convert
-        # goal_north, goal_east, goal_alt = global_to_local(self.goal_global_position, self.global_home)
-        # grid_goal = (int(np.ceil(goal_north - north_offset)), int(np.ceil(goal_east - east_offset)))
+        goal_north, goal_east, goal_alt = global_to_local(self.goal_global_position, self.global_home)
+        grid_goal = (int(np.ceil(goal_north - north_offset)), int(np.ceil(goal_east - east_offset)))
 
         # Run A* to find a path from start to goal
-        # Done: add diagonal motions with a cost of sqrt(2) to your A* implementation
+        # DONE: add diagonal motions with a cost of sqrt(2) to your A* implementation
         # or move to a different search space such as a graph (not done here)
         print('Local Start and Goal: ', grid_start, grid_goal)
+        # exit(0)
         path, _ = a_star(grid, heuristic, grid_start, grid_goal)
-        # TODO: prune path to minimize number of waypoints
+        # DONE: prune path to minimize number of waypoints
+        path = collinearity_prune(path)
         # TODO (if you're feeling ambitious): Try a different approach altogether!
 
         # Convert path to waypoints
         waypoints = [[p[0] + north_offset, p[1] + east_offset, TARGET_ALTITUDE, 0] for p in path]
         # Set self.waypoints
         self.waypoints = waypoints
-        # TODO: send waypoints to sim (this is just for visualization of waypoints)
+        # DONE: send waypoints to sim (this is just for visualization of waypoints)
         self.send_waypoints()
 
     def start(self):
