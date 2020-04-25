@@ -37,15 +37,19 @@ To accomplish this, you will:
    ```
    I calculated the thrust required on each motor using the below equations.
    ```
-   float first_term = collThrustCmd / 4;
-   float second_term = momentCmd.z / (kappa * 4);
-   float third_term = momentCmd.x / (4 * l);
-   float forth_term = momentCmd.y / (4 * l);
+   float t1 = collThrustCmd / 4;
+   float t2 = momentCmd.z / (kappa * 4);
+   float t3 = momentCmd.x / (4 * l);
+   float t4 = momentCmd.y / (4 * l);
 
-   cmd.desiredThrustsN[0] = first_term - second_term + third_term + forth_term; // front left
-   cmd.desiredThrustsN[1] = first_term + second_term - third_term + forth_term; // front right
-   cmd.desiredThrustsN[2] = first_term + second_term + third_term - forth_term; // rear left
-   cmd.desiredThrustsN[3] = first_term - second_term - third_term - forth_term; // rear right
+   //  Motor1          Motor2
+   //            Q
+   //  Motor3          Motor4
+
+   cmd.desiredThrustsN[0] = t1 - t2 + t3 + t4; // Motor1
+   cmd.desiredThrustsN[1] = t1 + t2 - t3 + t4; // Motor2
+   cmd.desiredThrustsN[2] = t1 + t2 + t3 - t4; // Motor3
+   cmd.desiredThrustsN[3] = t1 - t2 - t3 - t4; // Motor4
    ```
  - implement the code in the function `BodyRateControl()`
    
@@ -88,10 +92,8 @@ if (collThrustCmd > 0) {
 
   pqrCmd.z = 0;
 ```
- 
- - Tune `kpBank` in `QuadControlParams.txt` to minimize settling time but avoid too much overshoot
- 
- tuned `kpBank` to `12`
+
+tuned `kpBank` to `12` to minimize settling time but avoid too much overshoot
 
 If successful you should now see the quad level itself (as shown below), though it’ll still be flying away slowly since we’re not controlling velocity/position!  You should also see the vehicle angle (Roll) get controlled to 0.
 
@@ -110,6 +112,8 @@ PASS: ABS(Quad.Omega.X) was less than 2.500000 for at least 0.750000 seconds
 ## Position/velocity and yaw angle control (scenario 3)
 
 There are 2 identical quads in this scenario, one offset from its target point initialized with zero yaw and second offset from target point with 45 deg yaw. The goal is to stabilize both quads and make them reach their targeted lateral position, while maintaining their altitude.
+
+The code can be found in `LateralPositionControl()`, `AltitudeControl()` and `YawControl()` functions. 
 
 Tuned `kpPosXY` `kpPosZ` `KiPosZ` `kpVelXY` `kpVelZ` to achieve the expected results.
 
@@ -134,7 +138,7 @@ In this scenario, there are 3 quadrotors with some non-idealities:
 - The orange vehicle is an ideal quad
 - The red vehicle is heavier than usual
 
-The main task is to relax the controller to improve the robustness of the control system and get all the quads to reach their destination.
+The main task is to relax the controller to improve the robustness of the control system and get all the quads to reach their destination. Here I modified the `AltitudeControl()` to add basic integral control to help with the different-mass vehicle.
 
 ### Result
 
