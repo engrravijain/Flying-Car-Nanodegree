@@ -12,7 +12,7 @@ By setting the mass of quad to `0.5` in (QuadControlParams.txt)[./config/QuadCon
 <br><br>
 
 ```
-Simulation #87 (../config/1_Intro.txt)
+Simulation #1 (../config/1_Intro.txt)
 PASS: ABS(Quad.PosFollowErr) was less than 0.500000 for at least 0.800000 seconds
 ```
 
@@ -102,14 +102,16 @@ If successful you should now see the quad level itself (as shown below), though 
 </p>
 
 ```
-Simulation #5 (../config/2_AttitudeControl.txt)
+Simulation #1 (../config/2_AttitudeControl.txt)
 PASS: ABS(Quad.Roll) was less than 0.025000 for at least 0.750000 seconds
 PASS: ABS(Quad.Omega.X) was less than 2.500000 for at least 0.750000 seconds
 ```
 
 ## Position/velocity and yaw angle control (scenario 3)
 
-Tuned `kpPosXY` `kpPosZ` `KiPosZ` `kpVelXY` `kpVelZ` 
+There are 2 identical quads in this scenario, one offset from its target point initialized with zero yaw and second offset from target point with 45 deg yaw. The goal is to stabilize both quads and make them reach their targeted lateral position, while maintaining their altitude.
+
+Tuned `kpPosXY` `kpPosZ` `KiPosZ` `kpVelXY` `kpVelZ` to achieve the expected results.
 
 ### Result
 
@@ -118,7 +120,7 @@ Tuned `kpPosXY` `kpPosZ` `KiPosZ` `kpVelXY` `kpVelZ`
 </p>
 
 ```
-Simulation #37 (../config/3_PositionControl.txt)
+Simulation #1 (../config/3_PositionControl.txt)
 PASS: ABS(Quad1.Pos.X) was less than 0.100000 for at least 1.250000 seconds
 PASS: ABS(Quad2.Pos.X) was less than 0.100000 for at least 1.250000 seconds
 PASS: ABS(Quad2.Yaw) was less than 0.100000 for at least 1.000000 seconds
@@ -141,13 +143,15 @@ The main task is to relax the controller to improve the robustness of the contro
 </p>
 
 ```
-Simulation #39 (../config/4_Nonidealities.txt)
+Simulation #1 (../config/4_Nonidealities.txt)
 PASS: ABS(Quad1.PosFollowErr) was less than 0.100000 for at least 1.500000 seconds
 PASS: ABS(Quad2.PosFollowErr) was less than 0.100000 for at least 1.500000 seconds
 PASS: ABS(Quad3.PosFollowErr) was less than 0.100000 for at least 1.500000 seconds
 ```
 
 ## Tracking trajectories (scenario 5)
+
+The drone (as tuned above) is able to follow the trajectory seamlessly:
 
 ### Result
 
@@ -156,6 +160,6 @@ PASS: ABS(Quad3.PosFollowErr) was less than 0.100000 for at least 1.500000 secon
 </p>
 
 ```
-Simulation #41 (../config/5_TrajectoryFollow.txt)
+Simulation #1 (../config/5_TrajectoryFollow.txt)
 PASS: ABS(Quad2.PosFollowErr) was less than 0.250000 for at least 3.000000 seconds
 ```
