@@ -49,3 +49,27 @@ Made required code changes in `GetRbgPrime()` and `Predict()` functions in [Quad
 In order to capture the magnitude of error I tuned the parameters in [QuadEstimatorEKF.txt](./config/QuadEstimatorEKF.txt).
 
 This scenario had no specific measurable criteria being checked
+
+## Step 4: Magnetometer Update
+
+Following Section 7.3.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj#/54894644/) the equations for `zFromX` and `hPrime` for Magnetometer is implemented as follows in `UpdateFromMag()` function in [QuadEstimatorEKF.cpp](./src/QuadEstimatorEKF.cpp).
+
+```
+float estYaw = ekfState(6);
+if (estYaw - magYaw > +F_PI) estYaw -= 2.f*F_PI;
+if (estYaw - magYaw < -F_PI) estYaw += 2.f*F_PI;
+
+zFromX(0) = estYaw;
+hPrime(0, 6) = 1;
+```
+
+Tuning the parameter `QYawStd` to .1 in [QuadEstimatorEKF.txt](./config/QuadEstimatorEKF.txt) approximately captures the magnitude of the drift.
+
+### Result
+
+```
+Simulation #5 (../config/10_MagUpdate.txt)
+PASS: ABS(Quad.Est.E.Yaw) was less than 0.120000 for at least 10.000000 seconds
+PASS: ABS(Quad.Est.E.Yaw-0.000000) was less than Quad.Est.S.Yaw for 71% of the time
+```
+
