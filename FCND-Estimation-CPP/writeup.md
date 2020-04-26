@@ -32,3 +32,20 @@ I modified the `UpdateFromIMU()` function in [QuadEstimatorEKF.cpp](./src/QuadEs
 Simulation #3 (../config/07_AttitudeEstimation.txt)
 PASS: ABS(Quad.Est.E.MaxEuler) was less than 0.100000 for at least 3.000000 seconds
 ```
+
+## Step 3: Prediction Step
+
+### Scenario 8
+
+This scenario had no specific measurable criteria being checked. However I completed the task by implementing the prediction step filter in `PredictState()` function in [QuadEstimatorEKF.cpp](./src/QuadEstimatorEKF.cpp).
+
+The estimator state tracks the actual state with only reasonably slow drift.
+
+### Scenario 9
+
+Made required code changes in `GetRbgPrime()` and `Predict()` functions in [QuadEstimatorEKF.cpp](./src/QuadEstimatorEKF.cpp).
+
+
+In order to capture the magnitude of error I tuned the parameters in [QuadEstimatorEKF.txt](./config/QuadEstimatorEKF.txt).
+
+This scenario had no specific measurable criteria being checked
