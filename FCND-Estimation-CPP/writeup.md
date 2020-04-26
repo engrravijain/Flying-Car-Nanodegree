@@ -22,4 +22,13 @@ PASS: ABS(Quad.GPS.X-Quad.Pos.X) was less than MeasuredStdDev_GPSPosXY for 67% o
 PASS: ABS(Quad.IMU.AX-0.000000) was less than MeasuredStdDev_AccelXY for 67% of the time
 ```
 
-## Step 2: 
+## Step 2: Attitude Estimation
+
+I modified the `UpdateFromIMU()` function in [QuadEstimatorEKF.cpp](./src/QuadEstimatorEKF.cpp) to modify linear implementation of the filter to a non-linear one to get better results. The success criteria is Your attitude estimator needs to get within 0.1 rad for each of the Euler angles for at least 3 seconds.
+
+### Result
+
+```
+Simulation #3 (../config/07_AttitudeEstimation.txt)
+PASS: ABS(Quad.Est.E.MaxEuler) was less than 0.100000 for at least 3.000000 seconds
+```
